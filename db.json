@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "id": "user_vedika",
+      "name": "Vedika",
+      "email": "vedika@example.com",
+      "password": "$2a$10$SKe2Qf00KORst0/Sg2u8bezCfCpT7FGTNE2dGunwIFm2K9BV986aK",
+      "createdAt": "2026-10-05T12:00:00.000Z"
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "a0": 78,
+      "d0": "NORMAL",
+      "status": "GOOD",
+      "timestamp": 1791183000000,
+      "date": "05/10/2026",
+      "time": "12:00:00 PM"
+    },
+    {
+      "id": 2,
+      "a0": 134,
+      "d0": "NORMAL",
+      "status": "MODERATE",
+      "timestamp": 1791183010000,
+      "date": "05/10/2026",
+      "time": "12:00:10 PM"
+    },
+    {
+      "id": 3,
+      "a0": 245,
+      "d0": "NORMAL",
+      "status": "POOR",
+      "timestamp": 1791183020000,
+      "date": "05/10/2026",
+      "time": "12:00:20 PM"
+    },
+    {
+      "id": 4,
+      "a0": 155,
+      "d0": "NORMAL",
+      "status": "MODERATE",
+      "timestamp": 1791183776107,
+      "date": "05/10/2026",
+      "time": "12:32:56 PM"
+    },
+    {
+      "id": 5,
+      "a0": 380,
+      "d0": "DETECTED",
+      "status": "VERY POOR",
+      "timestamp": 1791183776154,
+      "date": "05/10/2026",
+      "time": "12:32:56 PM"
+    },
+    {
+      "id": 6,
+      "a0": 155,
+      "d0": "NORMAL",
+      "status": "MODERATE",
+      "timestamp": 1791183811417,
+      "date": "05/10/2026",
+      "time": "12:33:31 PM"
+    },
+    {
+      "id": 7,
+      "a0": 380,
+      "d0": "DETECTED",
+      "status": "VERY POOR",
+      "timestamp": 1791183811455,
+      "date": "05/10/2026",
+      "time": "12:33:31 PM"
+    }
+  ],
+  "deviceSettings": {
+    "lcdLine1": "VEDIKA & TEAM",
+    "lcdLine2": "AIR MONITORING",
+    "ledStatus": "ON",
+    "buzzerStatus": "OFF",
+    "buzzerMode": "AUTO",
+    "lastSeen": 1791183811455
+  }
+}

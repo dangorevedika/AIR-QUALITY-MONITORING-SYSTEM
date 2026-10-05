@@ -1,0 +1,760 @@
+# Project Prompt: Simple IoT World – MQ-2 Air Quality Monitoring System
+
+Create a complete **IoT-based Gas, Smoke and Air Quality Monitoring System** named:
+
+**“Simple IoT World – Air Quality Monitoring System”**
+
+The project must use only an **ESP8266 NodeMCU CP2102** and a **4-pin MQ-2 Gas/Smoke Sensor Module** for environmental sensing.
+
+The MQ-2 sensor has exactly four pins:
+
+* **A0 – Analog Output**
+* **D0 – Digital Output**
+* **VCC – Power**
+* **GND – Ground**
+
+Do **not** use DHT11 or any temperature/humidity sensor.
+
+---
+
+## 1. Hardware Components
+
+Use:
+
+* ESP8266 NodeMCU CP2102
+* MQ-2 Gas/Smoke Sensor
+* 16×2 I2C LCD
+* LED
+* Buzzer
+* 220Ω resistor for LED
+* Breadboard
+* Jumper wires
+* USB cable
+
+---
+
+## 2. Hardware Connections
+
+### MQ-2 Sensor
+
+Connect the 4 pins as follows:
+
+| MQ-2 Pin | ESP8266 Pin |
+| -------- | ----------- |
+| **VCC**  | VIN / 5V    |
+| **GND**  | GND         |
+| **A0**   | A0          |
+| **D0**   | D6 / GPIO12 |
+
+### Important MQ-2 Function
+
+* **A0:** Read the variable analog gas/smoke sensor value.
+* **D0:** Detect whether the gas/smoke level has crossed the threshold.
+* The threshold for D0 can be adjusted using the potentiometer present on the MQ-2 module.
+
+**Important:** The MQ-2 is primarily a gas/smoke sensor. Do not claim that its raw analog value is a certified AQI measurement.
+
+Also, because the MQ-2 module is powered from 5V and its analog output may be higher than the safe ADC input of some ESP8266 NodeMCU boards, use an appropriate **voltage divider/level protection on A0** according to the exact board specification.
+
+---
+
+## 3. LCD Connection
+
+Use a 16×2 I2C LCD.
+
+| LCD Pin | ESP8266    |
+| ------- | ---------- |
+| VCC     | VIN / 5V   |
+| GND     | GND        |
+| SDA     | D2 / GPIO4 |
+| SCL     | D1 / GPIO5 |
+
+Use I2C address:
+
+**0x27**
+
+If the actual LCD module uses a different I2C address, allow it to be changed easily in the code.
+
+---
+
+## 4. LED Connection
+
+Connect:
+
+```text
+ESP8266 D3
+    ↓
+220Ω Resistor
+    ↓
+LED Anode (+)
+
+LED Cathode (−)
+    ↓
+GND
+```
+
+The LED should indicate the gas/smoke warning status.
+
+---
+
+## 5. Buzzer Connection
+
+```text
+ESP8266 D4 → Buzzer (+)
+ESP8266 GND → Buzzer (−)
+```
+
+The buzzer should turn ON when dangerous gas/smoke levels are detected.
+
+---
+
+# 6. Web Application
+
+Create a responsive web application for monitoring the MQ-2 sensor.
+
+### Frontend
+
+Use:
+
+* HTML
+* Tailwind CSS
+* JavaScript
+* Chart.js
+
+### Backend
+
+Use:
+
+* Node.js
+* Express.js
+
+### Database
+
+Use a simple JSON database:
+
+```text
+db.json
+```
+
+The application should be deployable on **Render**.
+
+---
+
+# 7. Login and Registration
+
+Create a login and registration system.
+
+### Registration
+
+Fields:
+
+* Name
+* Email
+* Password
+
+The application must hash passwords securely.
+
+### Login
+
+Fields:
+
+* Email
+* Password
+
+After successful login, redirect the user to the dashboard.
+
+---
+
+# 8. Dashboard
+
+After login, show a modern IoT dashboard.
+
+Header:
+
+**Simple IoT World**
+
+Display:
+
+**Welcome, Vedika**
+
+Also display ESP8266 status:
+
+🟢 **ESP8266 ONLINE**
+
+or
+
+🔴 **ESP8266 OFFLINE**
+
+---
+
+# 9. Dashboard Tab 1 — Air Quality Monitoring
+
+Create a main monitoring dashboard for the MQ-2 sensor.
+
+Display:
+
+### Gas/Smoke Value
+
+Show the current **MQ-2 A0 analog value**.
+
+Example:
+
+```text
+Gas / Smoke Level
+245
+```
+
+Create a visual gauge/progress indicator.
+
+---
+
+# 10. Air Quality Status
+
+For project/demo purposes, classify the MQ-2 analog reading as:
+
+```text
+0–100       → GOOD
+101–200     → MODERATE
+201–300     → POOR
+301+        → VERY POOR
+```
+
+Display the corresponding status clearly.
+
+Example:
+
+```text
+Gas/Smoke Value: 245
+Status: POOR
+```
+
+**Important:** These are only demo thresholds for this project and are **not certified AQI values**. MQ-2 readings depend on sensor characteristics, warm-up, calibration, gas type, and environment.
+
+---
+
+# 11. D0 Digital Status
+
+Also read the MQ-2 **D0 pin**.
+
+Display:
+
+```text
+Digital Gas Status
+NORMAL
+```
+
+or
+
+```text
+Digital Gas Status
+DETECTED
+```
+
+When D0 indicates that the configured threshold has been crossed:
+
+* Turn LED ON.
+* Turn buzzer ON.
+* Display warning on the LCD.
+* Show warning on the web dashboard.
+
+---
+
+# 12. Warning System
+
+When dangerous gas/smoke is detected:
+
+Display:
+
+**⚠️ WARNING: HIGH GAS/SMOKE LEVEL**
+
+Then:
+
+```text
+LED → ON
+Buzzer → ON
+LCD → WARNING
+Dashboard → VERY POOR / DANGER
+```
+
+When the condition returns to normal:
+
+```text
+LED → OFF
+Buzzer → OFF
+LCD → NORMAL
+Dashboard → GOOD
+```
+
+The exact trigger should be based on the MQ-2 D0 threshold and/or configured analog threshold.
+
+---
+
+# 13. Gas/Smoke Graph
+
+Use **Chart.js**.
+
+Create one graph:
+
+### MQ-2 Gas/Smoke Level
+
+X-axis:
+
+**Time**
+
+Y-axis:
+
+**MQ-2 Analog Value**
+
+The graph should update whenever new sensor data is received.
+
+---
+
+# 14. Saved Records
+
+Create a table for historical MQ-2 readings.
+
+Columns:
+
+| # | Gas/Smoke Value | Digital Status | Air Quality Status | Time | Date | Action |
+| - | --------------- | -------------- | ------------------ | ---- | ---- | ------ |
+
+Features:
+
+* Save sensor records.
+* Show latest records first.
+* Pagination.
+* Delete record button.
+* Use **Asia/Kolkata (+05:30)** timezone.
+
+---
+
+# 15. Dashboard Tab 2 — Smart LCD Display
+
+Create a section to control the 16×2 LCD remotely.
+
+Provide two input boxes:
+
+### Line 1
+
+Maximum 16 characters.
+
+### Line 2
+
+Maximum 16 characters.
+
+Button:
+
+**Save to LCD**
+
+Example:
+
+```text
+VEDIKA & TEAM
+AIR MONITORING
+```
+
+The ESP8266 should fetch the saved LCD text from the server and display it.
+
+---
+
+# 16. Dashboard Tab 3 — Device Control
+
+Create controls for:
+
+### LED
+
+Buttons:
+
+* **LED ON**
+* **LED OFF**
+
+The command should be sent to the ESP8266.
+
+### Buzzer
+
+Show:
+
+* Buzzer ON
+* Buzzer OFF
+
+The buzzer should normally be automatically controlled by the gas/smoke warning condition.
+
+---
+
+# 17. LCD Startup Display
+
+When ESP8266 starts:
+
+First display:
+
+```text
+Simple IoT World
+VEDIKA & TEAM
+```
+
+Wait 3 seconds.
+
+Then:
+
+```text
+CONNECTING TO
+WiFi.........
+```
+
+After successful Wi-Fi connection:
+
+```text
+CONNECTED TO
+WiFi...SUCCESS
+```
+
+---
+
+# 18. LCD Monitoring Sequence
+
+Continuously display:
+
+### Screen 1
+
+```text
+AIR QUALITY
+245
+```
+
+Wait 2 seconds.
+
+### Screen 2
+
+```text
+GAS/SMOKE
+245
+```
+
+Wait 2 seconds.
+
+### Screen 3
+
+```text
+DIGITAL STATUS
+NORMAL
+```
+
+Wait 2 seconds.
+
+### Screen 4
+
+```text
+SMART DISPLAY
+MyData
+```
+
+Wait 2 seconds.
+
+### Screen 5
+
+```text
+LED STATUS
+ON
+```
+
+Wait 2 seconds.
+
+Then repeat.
+
+If dangerous gas/smoke is detected, temporarily show:
+
+```text
+WARNING!
+GAS DETECTED
+```
+
+---
+
+# 19. ESP8266 Data Communication
+
+The ESP8266 should:
+
+1. Connect to Wi-Fi.
+2. Read MQ-2 A0 analog value.
+3. Read MQ-2 D0 digital value.
+4. Determine the gas/smoke status.
+5. Control LED.
+6. Control buzzer.
+7. Send sensor data to the Node.js server.
+8. Fetch LCD text from the server.
+9. Fetch LED control commands.
+10. Repeat every **10 seconds**.
+
+Use HTTP communication between ESP8266 and the Node.js/Express server.
+
+---
+
+# 20. Wi-Fi Configuration
+
+Use:
+
+```text
+WiFi SSID: ESP8266
+WiFi Password: 12345678
+```
+
+Keep the server/Render URL blank initially:
+
+```cpp
+const char* serverURL = "";
+```
+
+The user will add the Render URL after deployment.
+
+Do not expose secret device keys publicly.
+
+---
+
+# 21. Device Authentication
+
+Use a **Device Key** to authenticate communication between ESP8266 and the server.
+
+The server must verify the Device Key before accepting sensor data or device-control commands.
+
+Store the Device Key as an environment variable.
+
+---
+
+# 22. ESP8266 Online/Offline
+
+Show the device status on the dashboard.
+
+If recent data is received:
+
+🟢 **ESP8266 ONLINE**
+
+If no recent data is received:
+
+🔴 **ESP8266 OFFLINE**
+
+---
+
+# 23. User Interface
+
+Create a modern environmental IoT design.
+
+Use:
+
+* Green
+* Blue
+* Red for warning
+* Gradient cards
+* Rounded cards
+* Shadows
+* Sensor icons
+* Clean typography
+* Responsive design
+
+The website must work on:
+
+* Desktop
+* Tablet
+* Mobile
+
+---
+
+# 24. Light/Dark Mode
+
+Add:
+
+☀️ Light Mode
+
+and
+
+🌙 Dark Mode
+
+Save the user's theme preference using browser local storage.
+
+---
+
+# 25. Project File Structure
+
+Create:
+
+```text
+Simple-IoT-World/
+│
+├── server.js
+├── package.json
+├── db.json
+├── render.yaml
+├── .gitignore
+├── README.md
+│
+├── public/
+│   └── index.html
+│
+└── ESP8266/
+    └── MQ2_Air_Quality_Monitor.ino
+```
+
+---
+
+# 26. Backend API
+
+Create Express.js routes for:
+
+### Authentication
+
+```text
+/register
+/login
+/logout
+```
+
+### MQ-2 Sensor
+
+```text
+/api/sensor-data
+/api/latest-data
+/api/records
+```
+
+### LCD
+
+```text
+/api/lcd
+```
+
+### LED
+
+```text
+/api/led
+```
+
+### Buzzer
+
+```text
+/api/buzzer
+```
+
+### Device
+
+```text
+/api/device-status
+```
+
+---
+
+# 27. JSON Database
+
+Store:
+
+### Users
+
+* Name
+* Email
+* Hashed Password
+
+### Sensor Records
+
+* MQ-2 A0 analog value
+* MQ-2 D0 digital status
+* Air quality status
+* Timestamp
+* Date
+
+### Device Settings
+
+* LCD Line 1
+* LCD Line 2
+* LED status
+* Buzzer status
+
+---
+
+# 28. Security
+
+Implement:
+
+* Password hashing.
+* Secure sessions.
+* Session secret through environment variable.
+* Protected dashboard routes.
+* Input validation.
+* Device Key authentication.
+* No plain-text passwords.
+* No secret keys in frontend JavaScript.
+
+---
+
+# 29. Render Deployment
+
+The Node.js application should be deployable on Render.
+
+Use:
+
+```text
+npm start
+```
+
+Do not use Docker.
+
+Create:
+
+```text
+render.yaml
+```
+
+Use environment variables:
+
+```text
+DEVICE_KEY
+SESSION_SECRET
+PORT
+```
+
+After deployment, add the Render URL to the ESP8266 code.
+
+---
+
+# 30. Manual Testing
+
+No automated testing is required.
+
+Test manually:
+
+1. ESP8266 Wi-Fi connection.
+2. MQ-2 A0 analog reading.
+3. MQ-2 D0 digital detection.
+4. LED ON/OFF.
+5. Buzzer warning.
+6. LCD display.
+7. Web dashboard.
+8. Gas/smoke graph.
+9. Saved records.
+10. LCD remote control.
+11. LED remote control.
+12. ESP8266 online/offline status.
+13. Login/registration.
+14. Light/dark mode.
+15. Render deployment.
+
+---
+
+# 31. Footer
+
+The footer must contain exactly:
+
+**“Developed with ❤️ by Vedika & Team. Department of ETC, SB Jain, Nagpur”**
+
+Use **Vedika & Team** wherever the project requires the developer/team name.
+
+---
+
+# 32. Final Requirement
+
+The final project must be a beginner-friendly, working **IoT Gas/Smoke and Air Quality Monitoring System using ESP8266 and a 4-pin MQ-2 sensor**.
+
+Do not add DHT11, temperature, humidity, or any other sensor.
+
+The system must combine:
+
+**MQ-2 → ESP8266 → Wi-Fi → Node.js/Express → JSON Database → Web Dashboard**
+
+and provide real-time monitoring, gas/smoke warnings, LCD control, LED control, buzzer alerts, historical records, and ESP8266 online/offline status.

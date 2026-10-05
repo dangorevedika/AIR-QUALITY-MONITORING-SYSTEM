@@ -1,0 +1,29 @@
+{
+  "name": "simple-iot-world-air-quality-monitoring",
+  "version": "1.0.0",
+  "description": "AIR QUALITY SYSTEM – MQ-2 Air Quality, Smoke and Gas Monitoring System using ESP8266 NodeMCU and Node.js Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "esp8266",
+    "mq2",
+    "iot",
+    "air-quality",
+    "gas-sensor",
+    "smoke-detector",
+    "render",
+    "express"
+  ],
+  "author": "Vedika & Team",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  }
+}
