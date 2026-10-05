@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIR QUALITY SYSTEM – MQ-2 Environmental Monitoring</title>
+  <meta name="description" content="AIR QUALITY SYSTEM - Real-time IoT Gas, Smoke and Air Quality Monitoring System with 24-Hour Distribution Pie Chart & Animated Emojis by Vedika & Team.">
+  
+  <!-- Google Fonts: Outfit, Inter, Chakra Petch, VT323 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=VT323&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+            mono: ['Chakra Petch', 'monospace'],
+            lcd: ['VT323', 'monospace']
+          },
+          colors: {
+            neonCyan: '#06b6d4',
+            neonViolet: '#8b5cf6',
+            neonFuchsia: '#d946ef',
+            neonAmber: '#f59e0b',
+            neonEmerald: '#10b981',
+            neonRose: '#f43f5e'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ============================================================== */
+    /* VIBRANT MULTI-COLOR THEME & CUSTOM STYLING                    */
+    /* ============================================================== */
+    
+    /* Background Canvas */
+    body.dark-theme {
+      background: radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.08) 0%, transparent 60%),
+                  linear-gradient(135deg, #0b0f19 0%, #0f172a 50%, #1e1136 100%);
+      color: #f1f5f9;
+    }
+    
+    body.light-theme {
+      background: radial-gradient(circle at 10% 15%, rgba(217, 70, 239, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
+                  linear-gradient(135deg, #faf5ff 0%, #f0fdf4 50%, #eff6ff 100%);
+      color: #1e293b;
+    }
+
+    /* Multi-color Glassmorphic Glow Cards */
+    .glass-card-violet {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.12);
+    }
+    .dark .glass-card-violet {
+      background: rgba(19, 23, 44, 0.75);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      box-shadow: 0 10px 30px -5px rgba(139, 92, 246, 0.25);
+    }
+
+    .glass-card-emerald {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.12);
+    }
+    .dark .glass-card-emerald {
+      background: rgba(10, 31, 28, 0.75);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.25);
+    }
+
+    .glass-card-amber {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.12);
+    }
+    .dark .glass-card-amber {
+      background: rgba(35, 24, 10, 0.75);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.25);
+    }
+
+    .glass-card-fuchsia {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(217, 70, 239, 0.25);
+      box-shadow: 0 10px 25px -5px rgba(217, 70, 239, 0.12);
+    }
+    .dark .glass-card-fuchsia {
+      background: rgba(36, 13, 39, 0.75);
+      border: 1px solid rgba(217, 70, 239, 0.35);
+      box-shadow: 0 10px 30px -5px rgba(217, 70, 239, 0.25);
+    }
+
+    .glass-card-cyan {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.12);
+    }
+    .dark .glass-card-cyan {
+      background: rgba(10, 27, 44, 0.75);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      box-shadow: 0 10px 30px -5px rgba(6, 182, 212, 0.25);
+    }
+
+    /* ============================================================== */
+    /* ANIMATED EMOJIS KEYFRAMES                                      */
+    /* ============================================================== */
+    
+    /* 1. Floating & Bobbing Leaf / Clean Emoji */
+    @keyframes emoji-float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+      }
+      50% {
+        transform: translateY(-9px) rotate(8deg) scale(1.1);
+      }
+    }
+    .emoji-float {
+      display: inline-block;
+      animation: emoji-float 2.5s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    /* 2. Swaying Cloud / Moderate Emoji */
+    @keyframes emoji-sway {
+      0%, 100% {
+        transform: rotate(-10deg) scale(1);
+      }
+      50% {
+        transform: rotate(10deg) scale(1.08);
+      }
+    }
+    .emoji-sway {
+      display: inline-block;
+      animation: emoji-sway 2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    /* 3. Wiggling Mask / Warning Emoji */
+    @keyframes emoji-wiggle {
+      0%, 100% {
+        transform: rotate(0deg) scale(1);
+      }
+      25% {
+        transform: rotate(-12deg) scale(1.1);
+      }
+      75% {
+        transform: rotate(12deg) scale(1.1);
+      }
+    }
+    .emoji-wiggle {
+      display: inline-block;
+      animation: emoji-wiggle 1.2s ease-in-out infinite;
+    }
+
+    /* 4. Panic & Alarm Bouncing Fire/Siren Emoji */
+    @keyframes emoji-panic {
+      0%, 100% {
+        transform: scale(1) translateY(0);
+        filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.7));
+      }
+      25% {
+        transform: scale(1.25) translateY(-8px) rotate(-15deg);
+        filter: drop-shadow(0 0 15px rgba(239, 68, 68, 1));
+      }
+      50% {
+        transform: scale(1.1) translateY(0) rotate(15deg);
+        filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.8));
+      }
+      75% {
+        transform: scale(1.25) translateY(-6px) rotate(-10deg);
+        filter: drop-shadow(0 0 15px rgba(239, 68, 68, 1));
+      }
+    }
+    .emoji-panic {
+      display: inline-block;
+      animation: emoji-panic 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+    }
+
+    /* 5. Gentle Pulse for Live Indicators */
+    @keyframes emoji-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+    .emoji-pulse {
+      display: inline-block;
+      animation: emoji-pulse 1.8s ease-in-out infinite;
+    }
+
+    /* 6. Rotating Sparkle */
+    @keyframes emoji-spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .emoji-spin {
+      display: inline-block;
+      animation: emoji-spin-slow 6s linear infinite;
+    }
+
+    /* Simulated 16x2 Hardware LCD */
+    .lcd-screen-blue {
+      background: #001a33;
+      color: #38bdf8;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 20px rgba(56, 189, 248, 0.4);
+      text-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+    }
+    .lcd-screen-green {
+      background: #0d2818;
+      color: #4ade80;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 20px rgba(74, 222, 128, 0.4);
+      text-shadow: 0 0 6px rgba(74, 222, 128, 0.8);
+    }
+    .lcd-row {
+      letter-spacing: 0.18em;
+      font-size: 1.85rem;
+      line-height: 1.25;
+      font-family: 'VT323', monospace;
+    }
+
+    /* Pie chart donut center overlay */
+    .pie-center-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="dark-theme transition-colors duration-500 min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- ============================================================== -->
+  <!-- TOP NAVIGATION BAR                                             -->
+  <!-- ============================================================== -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl border-b border-purple-500/20 dark:border-purple-500/20 bg-white/70 dark:bg-slate-950/70 shadow-lg shadow-purple-950/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo & Name: AIR QUALITY SYSTEM with Animated Emojis -->
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-violet-500/30">
+          <span class="text-2xl emoji-float">🌿</span>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black font-display tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-400 bg-clip-text text-transparent">AIR QUALITY SYSTEM</span>
+            <span class="emoji-pulse text-base">✨</span>
+          </h1>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span>ESP8266 & MQ-2 Sensor</span>
+            <span class="text-purple-400">•</span>
+            <span class="text-xs font-mono text-cyan-600 dark:text-cyan-400">Department of ETC, SB Jain</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Controls: Status badge, Theme Toggle, Auth -->
+      <div class="flex items-center space-x-3">
+        
+        <!-- Live ESP8266 Online Status Pill -->
+        <div id="deviceStatusBadge" class="flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-bold border shadow-sm transition-all duration-300 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
+          <span class="relative flex h-2.5 w-2.5">
+            <span id="deviceStatusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="deviceStatusDot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span id="deviceStatusText">ESP8266 ONLINE</span>
+        </div>
+
+        <!-- Light / Dark Mode Toggle with Animated Emojis -->
+        <button id="themeToggleBtn" type="button" aria-label="Toggle Theme" class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300 hover:text-fuchsia-500 dark:hover:text-fuchsia-400 shadow-sm focus:outline-none transition">
+          <span id="themeToggleEmoji" class="text-base emoji-spin">☀️</span>
+        </button>
+
+        <!-- User Profile & Sign Out Controls -->
+        <div id="authNavContainer" class="flex items-center space-x-2">
+          <!-- Populated by JS -->
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- MAIN APPLICATION BODY                                          -->
+  <!-- ============================================================== -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- AUTHENTICATION FORM MODAL (Hidden when logged in) -->
+    <div id="authSection" class="hidden max-w-md mx-auto my-8">
+      <div class="glass-card-violet rounded-3xl p-8 border backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+        
+        <div class="text-center mb-6">
+          <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-violet-600 to-fuchsia-600 text-white mb-3 shadow-lg shadow-violet-500/30">
+            <span class="text-3xl emoji-pulse">🔐</span>
+          </div>
+          <h2 class="text-2xl font-black font-display text-slate-900 dark:text-white">AIR QUALITY SYSTEM</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sign in to monitor environmental sensing data</p>
+        </div>
+
+        <!-- Auth Tabs: Login vs Register -->
+        <div class="flex rounded-xl bg-slate-200/80 dark:bg-slate-800/80 p-1 mb-6">
+          <button id="tabBtnLogin" onclick="switchAuthTab('login')" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white transition">Sign In</button>
+          <button id="tabBtnRegister" onclick="switchAuthTab('register')" class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Register</button>
+        </div>
+
+        <div id="authAlert" class="hidden mb-4 p-3.5 rounded-xl text-xs font-semibold"></div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Email</label>
+            <input type="email" id="loginEmail" value="vedika@example.com" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Password</label>
+            <input type="password" id="loginPassword" value="vedika123" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+            <p class="text-xs text-slate-400 mt-1">Default demo: <strong class="text-cyan-500">vedika@example.com</strong> / <strong class="text-cyan-500">vedika123</strong></p>
+          </div>
+          <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-fuchsia-500/25 transition">Sign In</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" onsubmit="handleRegister(event)" class="hidden space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Name</label>
+            <input type="text" id="regName" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Email</label>
+            <input type="email" id="regEmail" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Password</label>
+            <input type="password" id="regPassword" required minlength="6" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+          </div>
+          <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-fuchsia-500/25 transition">Register Account</button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- DASHBOARD VIEW                                                 -->
+    <!-- ============================================================== -->
+    <div id="dashboardSection" class="space-y-6">
+
+      <!-- Header Banner with Welcome & Animated Simulation -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-violet-600/15 via-fuchsia-600/15 to-cyan-600/15 border border-purple-500/30 backdrop-blur-xl shadow-lg">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs uppercase font-extrabold tracking-wider text-cyan-600 dark:text-cyan-400 font-mono">AIR QUALITY SYSTEM</span>
+            <span class="text-sm emoji-float">🍃</span>
+          </div>
+          <h2 id="welcomeGreeting" class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white mt-1">
+            Welcome, Vedika
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-0.5">
+            24-Hour Environmental Sensing, Smoke Detection & Air Quality Changes
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Spike simulation button with animated fire -->
+          <button onclick="simulateGasSpike()" class="px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-white shadow-md shadow-rose-500/30 hover:scale-105 transition flex items-center gap-2">
+            <span class="emoji-panic text-sm">🔥</span>
+            <span>Simulate Gas Spike</span>
+          </button>
+          
+          <button onclick="fetchLatestData(true); fetchDailyStats();" title="Force Refresh" class="p-2.5 rounded-xl border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-300 hover:bg-purple-500/20 transition">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- CRITICAL WARNING BANNER with Animated Sirens -->
+      <div id="warningBanner" class="hidden rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 p-4 text-white shadow-2xl shadow-red-500/40 border-2 border-red-300">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-white/20 rounded-xl text-3xl">
+              <span class="emoji-panic">🚨</span>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-black tracking-wide font-display flex items-center gap-2">
+                WARNING: HIGH GAS / SMOKE DETECTED!
+                <span class="emoji-panic">⚠️</span>
+              </h3>
+              <p class="text-xs text-red-100 font-medium">MQ-2 analog/digital threshold triggered. Warning LED & Buzzer are turned ON.</p>
+            </div>
+          </div>
+          <span class="px-3 py-1 bg-white text-red-700 rounded-lg text-xs font-black uppercase tracking-widest shadow-md">DANGER</span>
+        </div>
+      </div>
+
+      <!-- DASHBOARD TABS NAVIGATION -->
+      <div class="flex border-b border-purple-500/20 space-x-2 sm:space-x-4 overflow-x-auto">
+        <button id="navTab1" onclick="switchDashboardTab('tab1')" class="py-3 px-4 text-sm font-bold border-b-2 border-fuchsia-500 text-fuchsia-600 dark:text-fuchsia-400 flex items-center space-x-2 focus:outline-none whitespace-nowrap">
+          <span class="emoji-float">📊</span>
+          <span>Air Quality & 24h Pie Chart</span>
+        </button>
+        <button id="navTab2" onclick="switchDashboardTab('tab2')" class="py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 flex items-center space-x-2 focus:outline-none whitespace-nowrap">
+          <span class="emoji-pulse">📟</span>
+          <span>Smart LCD Display</span>
+        </button>
+        <button id="navTab3" onclick="switchDashboardTab('tab3')" class="py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 flex items-center space-x-2 focus:outline-none whitespace-nowrap">
+          <span class="emoji-sway">🎛️</span>
+          <span>Actuator Controls</span>
+        </button>
+      </div>
+
+      <!-- ========================================================== -->
+      <!-- TAB 1: AIR QUALITY MONITORING & 24H PIE CHART              -->
+      <!-- ========================================================== -->
+      <div id="tabContent1" class="space-y-6">
+
+        <!-- 4 Multi-Color Key Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Card 1: Gas / Smoke Level (A0) - Electric Violet -->
+          <div class="glass-card-violet rounded-3xl p-5 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">Gas / Smoke Level</span>
+              <div class="w-10 h-10 rounded-xl bg-violet-500/20 text-violet-500 flex items-center justify-center text-lg shadow-sm">
+                <span class="emoji-float">💨</span>
+              </div>
+            </div>
+            <div class="mt-3 flex items-baseline gap-2">
+              <span id="metricA0Value" class="text-4xl font-black font-mono text-slate-900 dark:text-white">--</span>
+              <span class="text-xs text-violet-500 font-semibold">ADC (0-1023)</span>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-violet-950/20 dark:bg-slate-800 h-2.5 rounded-full mt-3 overflow-hidden border border-violet-500/20">
+              <div id="metricA0Bar" class="bg-gradient-to-r from-violet-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: 25%;"></div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2 flex justify-between font-mono">
+              <span>0 Clean</span>
+              <span>100 Mod</span>
+              <span>200 Poor</span>
+              <span>300+ Smoke</span>
+            </p>
+          </div>
+
+          <!-- Card 2: Air Quality Status - Neon Emerald & Animated Emoji -->
+          <div class="glass-card-emerald rounded-3xl p-5 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Air Quality Status</span>
+              <div id="statusEmojiContainer" class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-xl shadow-sm">
+                <span id="statusAnimatedEmoji" class="emoji-float">🌿</span>
+              </div>
+            </div>
+            <div class="mt-3">
+              <span id="metricAqStatus" class="inline-block px-3.5 py-1 rounded-xl text-lg font-black font-display uppercase tracking-wider bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                GOOD
+              </span>
+            </div>
+            <p id="metricAqAdvisory" class="text-xs text-slate-600 dark:text-slate-300 mt-3 font-medium">
+              Pure, breathable air reading (0-100)
+            </p>
+          </div>
+
+          <!-- Card 3: Digital Gas Status (D0) - Neon Amber -->
+          <div class="glass-card-amber rounded-3xl p-5 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Digital Pin (D0)</span>
+              <div id="digitalStatusIcon" class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-lg shadow-sm">
+                <span id="digitalStatusEmoji" class="emoji-pulse">⚡</span>
+              </div>
+            </div>
+            <div class="mt-3">
+              <span id="metricD0Status" class="text-2xl font-black font-display text-emerald-600 dark:text-emerald-400">
+                NORMAL
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 mt-3">
+              MQ-2 onboard comparator threshold
+            </p>
+          </div>
+
+          <!-- Card 4: Actuator Status - Neon Fuchsia -->
+          <div class="glass-card-fuchsia rounded-3xl p-5 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400">Hardware Actuators</span>
+              <div class="w-10 h-10 rounded-xl bg-fuchsia-500/20 flex items-center justify-center text-lg shadow-sm">
+                <span class="emoji-wiggle">🔔</span>
+              </div>
+            </div>
+            <div class="mt-3 flex items-center gap-4 font-mono">
+              <div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase">LED (D3)</span>
+                <p id="metricLedState" class="text-lg font-black text-slate-800 dark:text-white">OFF</p>
+              </div>
+              <div class="h-8 w-px bg-fuchsia-500/30"></div>
+              <div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase">Buzzer (D4)</span>
+                <p id="metricBuzzerState" class="text-lg font-black text-slate-800 dark:text-white">OFF</p>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-2 font-medium">Automatic smoke alarm protection</p>
+          </div>
+
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 24-HOUR AIR QUALITY CHANGES PIE CHART SECTION              -->
+        <!-- ========================================================== -->
+        <div class="glass-card-cyan rounded-3xl p-6 border relative overflow-hidden shadow-xl">
+          
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl emoji-spin">📊</span>
+                <h3 class="text-xl font-black font-display text-slate-900 dark:text-white">
+                  24-Hour Air Quality Shifts & Daily Distribution
+                </h3>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Visual Pie Chart illustrating proportional transitions between Good, Moderate, Poor, and Hazardous conditions over 1 day.
+              </p>
+            </div>
+            
+            <!-- Daily state changes badge with animated emoji -->
+            <div class="flex items-center gap-2">
+              <div class="px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 border border-purple-500/30 text-purple-700 dark:text-purple-300 text-xs font-bold flex items-center gap-2">
+                <span class="emoji-pulse">⚡</span>
+                <span id="dailyStateChangesCount">0 State Transitions Today</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Grid: Pie Chart (Left) + Breakdown Stats & Metrics (Right) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Pie / Doughnut Chart Container with Center Animated Emoji -->
+            <div class="lg:col-span-6 flex flex-col items-center justify-center">
+              <div class="relative w-64 h-64 sm:w-72 sm:h-72">
+                <canvas id="dailyPieChart"></canvas>
+                
+                <!-- Center Animated Emoji Overlay -->
+                <div class="pie-center-overlay">
+                  <div id="pieCenterEmoji" class="text-4xl emoji-float">🌿</div>
+                  <div id="pieCenterLabel" class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 mt-1 font-mono">GOOD AIR</div>
+                  <div id="pieCenterTotal" class="text-[10px] text-slate-400 font-mono">100% Day</div>
+                </div>
+              </div>
+
+              <p class="text-[11px] text-slate-400 mt-4 text-center">
+                Calculated from all sensor recordings in Asia/Kolkata (+05:30)
+              </p>
+            </div>
+
+            <!-- Right Column: Color-coded Segment Progress Bars & Daily Metrics -->
+            <div class="lg:col-span-6 space-y-4">
+              
+              <!-- 4 Segment Progress Bars with Animated Emojis -->
+              <div class="space-y-3">
+                
+                <!-- Good Air Tier -->
+                <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                  <div class="flex justify-between items-center text-xs font-bold text-emerald-700 dark:text-emerald-300 mb-1.5">
+                    <span class="flex items-center gap-1.5">
+                      <span class="emoji-float">🌿</span>
+                      <span>GOOD AIR (0 – 100)</span>
+                    </span>
+                    <span id="pctGoodDisplay" class="font-mono">0% (0 readings)</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="barGood" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Moderate Air Tier -->
+                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                  <div class="flex justify-between items-center text-xs font-bold text-amber-700 dark:text-amber-300 mb-1.5">
+                    <span class="flex items-center gap-1.5">
+                      <span class="emoji-sway">⛅</span>
+                      <span>MODERATE AIR (101 – 200)</span>
+                    </span>
+                    <span id="pctModDisplay" class="font-mono">0% (0 readings)</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="barMod" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Poor Air Tier -->
+                <div class="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20">
+                  <div class="flex justify-between items-center text-xs font-bold text-orange-700 dark:text-orange-300 mb-1.5">
+                    <span class="flex items-center gap-1.5">
+                      <span class="emoji-wiggle">😷</span>
+                      <span>POOR / SMOKY (201 – 300)</span>
+                    </span>
+                    <span id="pctPoorDisplay" class="font-mono">0% (0 readings)</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="barPoor" class="bg-orange-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Very Poor Air Tier -->
+                <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+                  <div class="flex justify-between items-center text-xs font-bold text-rose-700 dark:text-rose-300 mb-1.5">
+                    <span class="flex items-center gap-1.5">
+                      <span class="emoji-panic">🚨</span>
+                      <span>VERY POOR / HAZARD (301+)</span>
+                    </span>
+                    <span id="pctVPoorDisplay" class="font-mono">0% (0 readings)</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="barVPoor" class="bg-rose-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- 24-Hour Numerical Summary Cards -->
+              <div class="grid grid-cols-3 gap-2.5 pt-2 font-mono text-center">
+                <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span class="text-[10px] text-slate-400 uppercase block font-sans font-semibold">24h Average</span>
+                  <span id="statDailyAvg" class="text-base font-black text-cyan-500">--</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span class="text-[10px] text-slate-400 uppercase block font-sans font-semibold">24h Peak Gas</span>
+                  <span id="statDailyMax" class="text-base font-black text-rose-500">--</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span class="text-[10px] text-slate-400 uppercase block font-sans font-semibold">24h Min Gas</span>
+                  <span id="statDailyMin" class="text-base font-black text-emerald-500">--</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Historical Sensor Records Table -->
+        <div class="glass-card-violet rounded-3xl p-6 border shadow-lg">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="emoji-pulse text-lg">📑</span>
+                <h3 class="text-lg font-black font-display text-slate-900 dark:text-white">
+                  Historical Sensor Logs
+                </h3>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Logged readings in db.json with Asia/Kolkata (+05:30) timestamps</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="recordsCounter" class="text-xs font-semibold text-slate-400 font-mono">0 records</span>
+              <button onclick="fetchRecords(currentPage); fetchDailyStats();" class="px-3 py-1.5 text-xs font-bold rounded-xl border border-purple-500/30 hover:bg-purple-500/10 text-purple-600 dark:text-purple-300 transition">
+                <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-slate-300 dark:border-slate-800">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-200/70 dark:bg-slate-900/80 text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-4">#</th>
+                  <th class="py-3 px-4">Gas / Smoke</th>
+                  <th class="py-3 px-4">Digital Pin</th>
+                  <th class="py-3 px-4">Air Quality Tier</th>
+                  <th class="py-3 px-4">Time</th>
+                  <th class="py-3 px-4">Date</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="recordsTableBody" class="divide-y divide-slate-200 dark:divide-slate-800 font-mono text-xs">
+                <tr>
+                  <td colspan="7" class="py-6 text-center text-slate-400">Loading sensor records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <span id="paginationInfo" class="text-slate-500 dark:text-slate-400 font-mono">Showing page 1</span>
+            <div class="flex items-center space-x-2">
+              <button id="btnPrevPage" onclick="changePage(-1)" class="px-3 py-1.5 rounded-lg border border-purple-500/30 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-purple-500/10 transition">
+                <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+              </button>
+              <span id="pageNumberDisplay" class="font-bold text-purple-600 dark:text-purple-400 px-2 font-mono">1 / 1</span>
+              <button id="btnNextPage" onclick="changePage(1)" class="px-3 py-1.5 rounded-lg border border-purple-500/30 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-purple-500/10 transition">
+                Next <i class="fa-solid fa-chevron-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================================== -->
+      <!-- TAB 2: SMART LCD DISPLAY                                   -->
+      <!-- ========================================================== -->
+      <div id="tabContent2" class="hidden space-y-6">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Remote Editor -->
+          <div class="lg:col-span-6 glass-card-fuchsia rounded-3xl p-6 border shadow-sm space-y-5">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="emoji-float text-xl">📟</span>
+                <h3 class="text-xl font-black font-display text-slate-900 dark:text-white">
+                  Remote 16×2 LCD Broadcast
+                </h3>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Configure lines sent to the physical 16×2 I2C LCD on the NodeMCU.</p>
+            </div>
+
+            <div id="lcdAlert" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+
+            <form onsubmit="handleSaveLcd(event)" class="space-y-4">
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Line 1 (Max 16 Chars)</label>
+                  <span id="line1Count" class="text-xs font-mono text-fuchsia-500 font-bold">14/16</span>
+                </div>
+                <input type="text" id="lcdInputLine1" maxlength="16" value="AIR QUALITY SYS" oninput="updateLcdPreview()" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Line 2 (Max 16 Chars)</label>
+                  <span id="line2Count" class="text-xs font-mono text-fuchsia-500 font-bold">14/16</span>
+                </div>
+                <input type="text" id="lcdInputLine2" maxlength="16" value="VEDIKA & TEAM" oninput="updateLcdPreview()" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-fuchsia-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Preset Templates</label>
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" onclick="setLcdPreset('AIR QUALITY SYS', 'VEDIKA & TEAM')" class="px-2.5 py-1 text-xs font-semibold rounded-lg border border-purple-500/30 hover:bg-purple-500/10 text-purple-600 dark:text-purple-300">Air Quality Sys</button>
+                  <button type="button" onclick="setLcdPreset('VEDIKA & TEAM', 'AIR MONITORING')" class="px-2.5 py-1 text-xs font-semibold rounded-lg border border-purple-500/30 hover:bg-purple-500/10 text-purple-600 dark:text-purple-300">Vedika & Team</button>
+                  <button type="button" onclick="setLcdPreset('CLEAN AIR ZONE', 'STATUS: GOOD :)')" class="px-2.5 py-1 text-xs font-semibold rounded-lg border border-purple-500/30 hover:bg-purple-500/10 text-purple-600 dark:text-purple-300">Clean Air</button>
+                  <button type="button" onclick="setLcdPreset('WARNING ALERT!', 'SMOKE DETECTED')" class="px-2.5 py-1 text-xs font-semibold rounded-lg border border-purple-500/30 hover:bg-purple-500/10 text-purple-600 dark:text-purple-300">Smoke Alert</button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 hover:opacity-95 text-white font-black text-sm shadow-lg shadow-fuchsia-500/30 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Save to LCD</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- LCD Hardware Simulator Display -->
+          <div class="lg:col-span-6 glass-card-cyan rounded-3xl p-6 border shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs font-black uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  <span class="emoji-spin">🖥️</span>
+                  16×2 LCD Hardware Simulator
+                </h3>
+                <button onclick="toggleLcdColor()" class="text-xs font-bold px-3 py-1 rounded-lg border border-cyan-500/30 text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/10">
+                  Switch Color
+                </button>
+              </div>
+
+              <!-- Bezel & LCD Screen -->
+              <div class="bg-slate-950 p-6 rounded-2xl border-4 border-slate-800 shadow-2xl relative">
+                <div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-slate-600"></div>
+                <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-slate-600"></div>
+                <div class="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-slate-600"></div>
+                <div class="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-slate-600"></div>
+
+                <div id="lcdDisplayScreen" class="lcd-screen-blue rounded-lg p-5 select-none transition-colors duration-300">
+                  <div id="simLcdRow1" class="lcd-row uppercase font-mono overflow-hidden whitespace-pre">AIR QUALITY SYS </div>
+                  <div id="simLcdRow2" class="lcd-row uppercase font-mono overflow-hidden whitespace-pre mt-1">VEDIKA & TEAM   </div>
+                </div>
+
+                <div class="mt-3 flex justify-between text-[10px] font-mono text-slate-400">
+                  <span>I2C ADDR: 0x27 (SDA: D2, SCL: D1)</span>
+                  <span>16 CHARACTERS × 2 LINES</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+              <p class="font-bold text-slate-700 dark:text-slate-300">Sequence rendered on physical ESP8266:</p>
+              <p>• Startup: AIR QUALITY SYSTEM / VEDIKA & TEAM (3s) → WiFi Connection Status</p>
+              <p>• Live Monitoring (2s each): Screen 1 (Air Quality) → Screen 2 (Gas/Smoke) → Screen 3 (Digital Status) → Screen 4 (Smart Display) → Screen 5 (LED Status)</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================================== -->
+      <!-- TAB 3: ACTUATOR CONTROLS                                   -->
+      <!-- ========================================================== -->
+      <div id="tabContent3" class="hidden space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- LED Control -->
+          <div class="glass-card-amber rounded-3xl p-6 border shadow-sm space-y-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-xl font-black font-display text-slate-900 dark:text-white flex items-center gap-2">
+                  <span class="emoji-float">💡</span>
+                  LED Remote Actuation
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Directly trigger warning LED on NodeMCU D3 (via 220Ω resistor).</p>
+              </div>
+              <div id="ledIndicatorBulb" class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-lg transition-all duration-300">
+                <i class="fa-solid fa-lightbulb"></i>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between font-mono">
+              <span class="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase">Current LED State:</span>
+              <span id="ctrlLedStatusBadge" class="px-3 py-1 rounded-xl text-xs font-black bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                OFF
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="setLedState('ON')" class="py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 text-white font-black text-sm shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2">
+                <span class="emoji-pulse">💡</span>
+                <span>LED ON</span>
+              </button>
+              <button onclick="setLedState('OFF')" class="py-3 px-4 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-xmark"></i>
+                <span>LED OFF</span>
+              </button>
+            </div>
+            
+            <p class="text-xs text-slate-400">High gas/smoke conditions will automatically override LED to ON.</p>
+          </div>
+
+          <!-- Buzzer Control -->
+          <div class="glass-card-fuchsia rounded-3xl p-6 border shadow-sm space-y-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-xl font-black font-display text-slate-900 dark:text-white flex items-center gap-2">
+                  <span class="emoji-panic">📢</span>
+                  Acoustic Alarm / Buzzer
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Warning buzzer connected to NodeMCU D4 (GPIO2).</p>
+              </div>
+              <div id="buzzerIndicatorIcon" class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-lg transition-all duration-300">
+                <i class="fa-solid fa-bell"></i>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-between font-mono">
+              <span class="text-xs font-bold text-fuchsia-800 dark:text-fuchsia-300 uppercase">Current Buzzer State:</span>
+              <span id="ctrlBuzzerStatusBadge" class="px-3 py-1 rounded-xl text-xs font-black bg-fuchsia-500/20 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-500/30">
+                OFF
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="setBuzzerState('ON', 'MANUAL')" class="py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 hover:opacity-90 text-white font-black text-sm shadow-md shadow-rose-500/20 transition flex items-center justify-center gap-2">
+                <span class="emoji-panic">🚨</span>
+                <span>Test Alarm ON</span>
+              </button>
+              <button onclick="setBuzzerState('OFF', 'AUTO')" class="py-3 px-4 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Reset to Auto</span>
+              </button>
+            </div>
+
+            <p class="text-xs text-slate-400">Normally managed automatically by the gas/smoke threshold detector.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- MANDATORY EXACT FOOTER                                         -->
+  <!-- ============================================================== -->
+  <footer class="bg-white/80 dark:bg-slate-950/80 border-t border-purple-500/20 mt-12 py-6 text-center">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+        Developed with ❤️ by Vedika & Team. Department of ETC, SB Jain, Nagpur
+      </p>
+      <p class="text-xs text-slate-400 mt-1 font-mono">
+        AIR QUALITY SYSTEM – ESP8266 & MQ-2 Gas, Smoke & Environmental Monitoring
+      </p>
+    </div>
+  </footer>
+
+  <!-- ============================================================== -->
+  <!-- CLIENT JAVASCRIPT & PIE CHART CONTROLLER                       -->
+  <!-- ============================================================== -->
+  <script>
+    let currentUser = null;
+    let currentTab = 'tab1';
+    let currentPage = 1;
+    let dailyPieChart = null;
+    let lcdTheme = 'blue';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      initDailyPieChart();
+      checkAuthStatus();
+
+      // Poll every 3.5 seconds
+      setInterval(() => {
+        if (currentUser) {
+          fetchLatestData(false);
+          fetchDailyStats();
+        }
+      }, 3500);
+    });
+
+    // -------------------------------------------------------------
+    // THEME MANAGEMENT
+    // -------------------------------------------------------------
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      applyTheme(savedTheme);
+
+      document.getElementById('themeToggleBtn').addEventListener('click', () => {
+        const isDark = document.body.classList.contains('dark-theme');
+        applyTheme(isDark ? 'light' : 'dark');
+      });
+    }
+
+    function applyTheme(theme) {
+      const emoji = document.getElementById('themeToggleEmoji');
+      if (theme === 'dark') {
+        document.body.className = "dark-theme dark transition-colors duration-500 min-h-screen flex flex-col font-sans antialiased";
+        emoji.textContent = "☀️";
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.className = "light-theme transition-colors duration-500 min-h-screen flex flex-col font-sans antialiased";
+        emoji.textContent = "🌙";
+        localStorage.setItem('theme', 'light');
+      }
+      if (dailyPieChart) dailyPieChart.update('none');
+    }
+
+    // -------------------------------------------------------------
+    // AUTHENTICATION
+    // -------------------------------------------------------------
+    async function checkAuthStatus() {
+      try {
+        const res = await fetch('/api/me');
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          onLoginSuccess(data.user);
+        } else {
+          showAuthSection();
+        }
+      } catch (e) {
+        showAuthSection();
+      }
+    }
+
+    function showAuthSection() {
+      currentUser = null;
+      document.getElementById('authSection').classList.remove('hidden');
+      document.getElementById('dashboardSection').classList.add('hidden');
+      renderAuthNav(null);
+    }
+
+    function onLoginSuccess(user) {
+      currentUser = user;
+      document.getElementById('authSection').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.remove('hidden');
+      document.getElementById('welcomeGreeting').textContent = `Welcome, ${user.name || 'Vedika'}`;
+      renderAuthNav(user);
+      fetchLatestData(true);
+      fetchDailyStats();
+      fetchRecords(1);
+      fetchLcdData();
+    }
+
+    function renderAuthNav(user) {
+      const container = document.getElementById('authNavContainer');
+      if (user) {
+        container.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-bold hidden md:inline text-purple-600 dark:text-purple-300">Welcome, ${user.name}</span>
+            <button onclick="handleLogout()" class="px-3 py-1.5 rounded-xl text-xs font-bold border border-rose-500/30 hover:bg-rose-500/10 text-rose-500 transition">
+              Sign Out
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<span class="text-xs text-slate-400">Guest</span>`;
+      }
+    }
+
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const regForm = document.getElementById('registerForm');
+      const tabLogin = document.getElementById('tabBtnLogin');
+      const tabReg = document.getElementById('tabBtnRegister');
+      document.getElementById('authAlert').classList.add('hidden');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+        tabLogin.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white transition";
+        tabReg.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+      } else {
+        loginForm.classList.add('hidden');
+        regForm.classList.remove('hidden');
+        tabReg.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white transition";
+        tabLogin.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const alert = document.getElementById('authAlert');
+
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          onLoginSuccess(data.user);
+        } else {
+          alert.textContent = data.error || 'Login failed';
+          alert.className = "mb-4 p-3 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30";
+          alert.classList.remove('hidden');
+        }
+      } catch (e) {
+        alert.textContent = "Network error. Try again.";
+        alert.classList.remove('hidden');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const alert = document.getElementById('authAlert');
+
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          onLoginSuccess(data.user);
+        } else {
+          alert.textContent = data.error || 'Registration failed';
+          alert.className = "mb-4 p-3 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30";
+          alert.classList.remove('hidden');
+        }
+      } catch (e) {
+        alert.textContent = "Network error. Try again.";
+        alert.classList.remove('hidden');
+      }
+    }
+
+    async function handleLogout() {
+      try { await fetch('/logout'); } catch(e) {}
+      showAuthSection();
+    }
+
+    // -------------------------------------------------------------
+    // TAB SWITCHING
+    // -------------------------------------------------------------
+    function switchDashboardTab(tabId) {
+      currentTab = tabId;
+      ['tab1', 'tab2', 'tab3'].forEach(t => {
+        const content = document.getElementById('tabContent' + t.replace('tab', ''));
+        const btn = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (t === tabId) {
+          content.classList.remove('hidden');
+          btn.className = "py-3 px-4 text-sm font-bold border-b-2 border-fuchsia-500 text-fuchsia-600 dark:text-fuchsia-400 flex items-center space-x-2 focus:outline-none whitespace-nowrap";
+        } else {
+          content.classList.add('hidden');
+          btn.className = "py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 flex items-center space-x-2 focus:outline-none whitespace-nowrap";
+        }
+      });
+      if (tabId === 'tab1' && dailyPieChart) {
+        dailyPieChart.resize();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 24-HOUR PIE CHART INITIALIZATION & UPDATES
+    // -------------------------------------------------------------
+    function initDailyPieChart() {
+      const ctx = document.getElementById('dailyPieChart').getContext('2d');
+      dailyPieChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Good Air (0-100)', 'Moderate (101-200)', 'Poor (201-300)', 'Very Poor (301+)'],
+          datasets: [{
+            data: [70, 20, 10, 0],
+            backgroundColor: [
+              '#10b981', // Emerald
+              '#f59e0b', // Amber
+              '#f97316', // Orange
+              '#ef4444'  // Red
+            ],
+            borderColor: [
+              'rgba(16, 185, 129, 0.4)',
+              'rgba(245, 158, 11, 0.4)',
+              'rgba(249, 115, 22, 0.4)',
+              'rgba(239, 68, 68, 0.4)'
+            ],
+            borderWidth: 2,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleFont: { family: 'Outfit', size: 13 },
+              bodyFont: { family: 'Chakra Petch', size: 12 },
+              padding: 10,
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.label}: ${context.raw}%`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    async function fetchDailyStats() {
+      try {
+        const res = await fetch('/api/daily-stats');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update Pie Chart Data
+        const pGood = data.percentages.good || 0;
+        const pMod = data.percentages.moderate || 0;
+        const pPoor = data.percentages.poor || 0;
+        const pVPoor = data.percentages.veryPoor || 0;
+
+        if (dailyPieChart) {
+          dailyPieChart.data.datasets[0].data = [pGood, pMod, pPoor, pVPoor];
+          dailyPieChart.update('none');
+        }
+
+        // Center Overlay
+        const centerEmoji = document.getElementById('pieCenterEmoji');
+        const centerLabel = document.getElementById('pieCenterLabel');
+        const centerTotal = document.getElementById('pieCenterTotal');
+        
+        centerLabel.textContent = `${data.dominantStatus} AIR`;
+        centerTotal.textContent = `${data.totalRecords} Samples Today`;
+
+        if (data.dominantStatus === 'GOOD') {
+          centerEmoji.textContent = '🌿';
+          centerEmoji.className = 'text-4xl emoji-float';
+        } else if (data.dominantStatus === 'MODERATE') {
+          centerEmoji.textContent = '⛅';
+          centerEmoji.className = 'text-4xl emoji-sway';
+        } else if (data.dominantStatus === 'POOR') {
+          centerEmoji.textContent = '😷';
+          centerEmoji.className = 'text-4xl emoji-wiggle';
+        } else {
+          centerEmoji.textContent = '🚨';
+          centerEmoji.className = 'text-4xl emoji-panic';
+        }
+
+        // State changes badge
+        document.getElementById('dailyStateChangesCount').textContent = `${data.stateChanges} State Transitions Today`;
+
+        // Progress Bars & text
+        document.getElementById('pctGoodDisplay').textContent = `${pGood}% (${data.distribution.good} samples)`;
+        document.getElementById('barGood').style.width = pGood + '%';
+
+        document.getElementById('pctModDisplay').textContent = `${pMod}% (${data.distribution.moderate} samples)`;
+        document.getElementById('barMod').style.width = pMod + '%';
+
+        document.getElementById('pctPoorDisplay').textContent = `${pPoor}% (${data.distribution.poor} samples)`;
+        document.getElementById('barPoor').style.width = pPoor + '%';
+
+        document.getElementById('pctVPoorDisplay').textContent = `${pVPoor}% (${data.distribution.veryPoor} samples)`;
+        document.getElementById('barVPoor').style.width = pVPoor + '%';
+
+        // 24h Metrics
+        document.getElementById('statDailyAvg').textContent = data.metrics.avgA0 || '--';
+        document.getElementById('statDailyMax').textContent = data.metrics.maxA0 || '--';
+        document.getElementById('statDailyMin').textContent = data.metrics.minA0 || '--';
+
+      } catch (err) {
+        console.error("Error fetching daily stats:", err);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // SENSOR DATA & ANIMATED EMOJI LOGIC
+    // -------------------------------------------------------------
+    async function fetchLatestData(initial = false) {
+      try {
+        const res = await fetch('/api/latest-data');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        updateDeviceStatus(data.online, data.secondsAgo);
+
+        if (data.latest) {
+          updateSensorCards(data.latest);
+        }
+
+        if (data.deviceSettings) {
+          updateActuatorDisplay(data.deviceSettings);
+        }
+      } catch (e) {}
+    }
+
+    function updateDeviceStatus(isOnline, secondsAgo) {
+      const badge = document.getElementById('deviceStatusBadge');
+      const ping = document.getElementById('deviceStatusPing');
+      const dot = document.getElementById('deviceStatusDot');
+      const text = document.getElementById('deviceStatusText');
+
+      if (isOnline) {
+        badge.className = "flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-bold border shadow-sm transition-all duration-300 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30";
+        ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+        dot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500";
+        text.textContent = "ESP8266 ONLINE";
+      } else {
+        badge.className = "flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-bold border shadow-sm transition-all duration-300 bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30";
+        ping.className = "hidden";
+        dot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500";
+        text.textContent = "ESP8266 OFFLINE";
+      }
+    }
+
+    function updateSensorCards(record) {
+      const a0 = Number(record.a0);
+      const d0 = record.d0;
+      const status = record.status || 'GOOD';
+
+      // Gas A0 Value
+      document.getElementById('metricA0Value').textContent = a0;
+      const pct = Math.min(100, Math.round((a0 / 500) * 100));
+      document.getElementById('metricA0Bar').style.width = pct + '%';
+
+      // Air Quality Status & Animated Emojis
+      const statusBadge = document.getElementById('metricAqStatus');
+      const advisory = document.getElementById('metricAqAdvisory');
+      const statusEmoji = document.getElementById('statusAnimatedEmoji');
+
+      statusBadge.textContent = status;
+
+      if (status === 'GOOD') {
+        statusBadge.className = "inline-block px-3.5 py-1 rounded-xl text-lg font-black font-display uppercase tracking-wider bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30";
+        advisory.textContent = "Pure, breathable air reading (0-100)";
+        statusEmoji.textContent = '🌿';
+        statusEmoji.className = 'emoji-float';
+      } else if (status === 'MODERATE') {
+        statusBadge.className = "inline-block px-3.5 py-1 rounded-xl text-lg font-black font-display uppercase tracking-wider bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30";
+        advisory.textContent = "Mild haze/acceptable concentration (101-200)";
+        statusEmoji.textContent = '⛅';
+        statusEmoji.className = 'emoji-sway';
+      } else if (status === 'POOR') {
+        statusBadge.className = "inline-block px-3.5 py-1 rounded-xl text-lg font-black font-display uppercase tracking-wider bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-500/30";
+        advisory.textContent = "Elevated gas/smoke concentration (201-300)";
+        statusEmoji.textContent = '😷';
+        statusEmoji.className = 'emoji-wiggle';
+      } else {
+        statusBadge.className = "inline-block px-3.5 py-1 rounded-xl text-lg font-black font-display uppercase tracking-wider bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30";
+        advisory.textContent = "Dangerous hazardous gas level (301+)";
+        statusEmoji.textContent = '🚨';
+        statusEmoji.className = 'emoji-panic';
+      }
+
+      // D0 Digital Status
+      const d0Elem = document.getElementById('metricD0Status');
+      const d0Emoji = document.getElementById('digitalStatusEmoji');
+      if (d0 === 'DETECTED') {
+        d0Elem.textContent = "DETECTED";
+        d0Elem.className = "text-2xl font-black font-display text-rose-600 dark:text-rose-400";
+        d0Emoji.textContent = '🔥';
+        d0Emoji.className = 'emoji-panic';
+      } else {
+        d0Elem.textContent = "NORMAL";
+        d0Elem.className = "text-2xl font-black font-display text-emerald-600 dark:text-emerald-400";
+        d0Emoji.textContent = '⚡';
+        d0Emoji.className = 'emoji-pulse';
+      }
+
+      // Warning Banner
+      const warningBanner = document.getElementById('warningBanner');
+      if (d0 === 'DETECTED' || status === 'VERY POOR' || a0 > 300) {
+        warningBanner.classList.remove('hidden');
+      } else {
+        warningBanner.classList.add('hidden');
+      }
+    }
+
+    function updateActuatorDisplay(settings) {
+      const led = settings.ledStatus || 'OFF';
+      const buzzer = settings.buzzerStatus || 'OFF';
+
+      document.getElementById('metricLedState').textContent = led;
+      document.getElementById('metricBuzzerState').textContent = buzzer;
+      document.getElementById('ctrlLedStatusBadge').textContent = led;
+      document.getElementById('ctrlBuzzerStatusBadge').textContent = buzzer;
+
+      const bulb = document.getElementById('ledIndicatorBulb');
+      if (led === 'ON') {
+        bulb.className = "w-10 h-10 rounded-full bg-amber-500/30 text-amber-500 shadow-lg shadow-amber-500/50 flex items-center justify-center text-lg";
+      } else {
+        bulb.className = "w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-lg";
+      }
+
+      const bell = document.getElementById('buzzerIndicatorIcon');
+      if (buzzer === 'ON') {
+        bell.className = "w-10 h-10 rounded-full bg-rose-500/30 text-rose-500 shadow-lg shadow-rose-500/50 flex items-center justify-center text-lg animate-bounce";
+      } else {
+        bell.className = "w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-lg";
+      }
+    }
+
+    // -------------------------------------------------------------
+    // RECORDS TABLE WITH ANIMATED EMOJIS
+    // -------------------------------------------------------------
+    async function fetchRecords(page = 1) {
+      currentPage = page;
+      const tbody = document.getElementById('recordsTableBody');
+      try {
+        const res = await fetch(`/api/records?page=${page}&limit=10`);
+        const data = await res.json();
+        
+        document.getElementById('recordsCounter').textContent = `${data.totalRecords} records`;
+        document.getElementById('paginationInfo').textContent = `Showing page ${data.currentPage} of ${data.totalPages || 1}`;
+        document.getElementById('pageNumberDisplay').textContent = `${data.currentPage} / ${data.totalPages || 1}`;
+        
+        document.getElementById('btnPrevPage').disabled = data.currentPage <= 1;
+        document.getElementById('btnNextPage').disabled = data.currentPage >= data.totalPages;
+
+        if (data.records.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No records found.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.records.map(r => {
+          let badgeClass = "text-emerald-500 bg-emerald-500/10 border-emerald-500/30";
+          let rowEmoji = '<span class="emoji-float">🌿</span>';
+          if (r.status === 'MODERATE') {
+            badgeClass = "text-amber-500 bg-amber-500/10 border-amber-500/30";
+            rowEmoji = '<span class="emoji-sway">⛅</span>';
+          }
+          if (r.status === 'POOR') {
+            badgeClass = "text-orange-500 bg-orange-500/10 border-orange-500/30";
+            rowEmoji = '<span class="emoji-wiggle">😷</span>';
+          }
+          if (r.status === 'VERY POOR') {
+            badgeClass = "text-rose-500 bg-rose-500/10 border-rose-500/30";
+            rowEmoji = '<span class="emoji-panic">🚨</span>';
+          }
+
+          const d0Badge = r.d0 === 'DETECTED' 
+            ? '<span class="text-rose-500 font-bold flex items-center gap-1"><span class="emoji-panic text-xs">🔥</span> DETECTED</span>'
+            : '<span class="text-emerald-500 font-medium">NORMAL</span>';
+
+          return `
+            <tr class="hover:bg-purple-500/5 transition">
+              <td class="py-3 px-4 text-slate-400">#${r.id}</td>
+              <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">${r.a0}</td>
+              <td class="py-3 px-4">${d0Badge}</td>
+              <td class="py-3 px-4">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border font-bold text-[11px] ${badgeClass}">
+                  ${rowEmoji} ${r.status}
+                </span>
+              </td>
+              <td class="py-3 px-4 text-slate-500 dark:text-slate-400">${r.time}</td>
+              <td class="py-3 px-4 text-slate-500 dark:text-slate-400">${r.date}</td>
+              <td class="py-3 px-4 text-right">
+                <button onclick="deleteRecord(${r.id})" class="text-slate-400 hover:text-rose-500 p-1 transition" title="Delete record">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {}
+    }
+
+    function changePage(direction) {
+      fetchRecords(currentPage + direction);
+    }
+
+    async function deleteRecord(id) {
+      if (!confirm(`Delete record #${id}?`)) return;
+      try {
+        const res = await fetch(`/api/records/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          fetchRecords(currentPage);
+          fetchDailyStats();
+        }
+      } catch (e) {}
+    }
+
+    // -------------------------------------------------------------
+    // SMART LCD DISPLAY
+    // -------------------------------------------------------------
+    async function fetchLcdData() {
+      try {
+        const res = await fetch('/api/lcd');
+        const data = await res.json();
+        if (data.line1) document.getElementById('lcdInputLine1').value = data.line1;
+        if (data.line2) document.getElementById('lcdInputLine2').value = data.line2;
+        updateLcdPreview();
+      } catch (e) {}
+    }
+
+    function updateLcdPreview() {
+      const line1 = document.getElementById('lcdInputLine1').value;
+      const line2 = document.getElementById('lcdInputLine2').value;
+
+      document.getElementById('line1Count').textContent = `${line1.length}/16`;
+      document.getElementById('line2Count').textContent = `${line2.length}/16`;
+
+      const sim1 = (line1 + " ".repeat(16)).substring(0, 16);
+      const sim2 = (line2 + " ".repeat(16)).substring(0, 16);
+
+      document.getElementById('simLcdRow1').textContent = sim1;
+      document.getElementById('simLcdRow2').textContent = sim2;
+    }
+
+    function setLcdPreset(l1, l2) {
+      document.getElementById('lcdInputLine1').value = l1;
+      document.getElementById('lcdInputLine2').value = l2;
+      updateLcdPreview();
+    }
+
+    function toggleLcdColor() {
+      const screen = document.getElementById('lcdDisplayScreen');
+      if (lcdTheme === 'blue') {
+        screen.className = "lcd-screen-green rounded-lg p-5 select-none transition-colors duration-300";
+        lcdTheme = 'green';
+      } else {
+        screen.className = "lcd-screen-blue rounded-lg p-5 select-none transition-colors duration-300";
+        lcdTheme = 'blue';
+      }
+    }
+
+    async function handleSaveLcd(e) {
+      e.preventDefault();
+      const line1 = document.getElementById('lcdInputLine1').value.trim();
+      const line2 = document.getElementById('lcdInputLine2').value.trim();
+      const alert = document.getElementById('lcdAlert');
+
+      try {
+        const res = await fetch('/api/lcd', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line1, line2 })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert.textContent = "LCD lines broadcasted to NodeMCU!";
+          alert.className = "p-3 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 block";
+          setTimeout(() => alert.classList.add('hidden'), 3500);
+        }
+      } catch (err) {
+        alert.textContent = "Failed to update LCD.";
+        alert.className = "p-3 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30 block";
+      }
+    }
+
+    // -------------------------------------------------------------
+    // DEVICE CONTROLS
+    // -------------------------------------------------------------
+    async function setLedState(state) {
+      try {
+        const res = await fetch('/api/led', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: state })
+        });
+        const data = await res.json();
+        if (data.success) fetchLatestData(false);
+      } catch (e) {}
+    }
+
+    async function setBuzzerState(state, mode) {
+      try {
+        const res = await fetch('/api/buzzer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: state, mode: mode })
+        });
+        const data = await res.json();
+        if (data.success) fetchLatestData(false);
+      } catch (e) {}
+    }
+
+    // Spike simulation with dynamic 24h pie chart refresh
+    async function simulateGasSpike() {
+      try {
+        await fetch('/api/simulate-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ a0: 385, d0: 'DETECTED' })
+        });
+        fetchLatestData(false);
+        fetchDailyStats();
+        fetchRecords(1);
+      } catch (e) {}
+    }
+  </script>
+</body>
+</html>
